@@ -1,3 +1,9 @@
 
 # PyCharm
 .idea/*
+
+# Python pyc
+*.pyc
+
+# Virtual environment
+env/*

@@ -12,21 +12,34 @@ Compute the sum of crossing events
 
 2. Use pip to install pip3 and virtualenv
 ```
-  $ sudo -H pip install pip3
+  $ sudo apt-get install python3-pip libsqlite3-dev
+  sqlite3
   $ sudo -H pip3 install virtualenv
 ```
 
-2. Create and activate a virtualenv and install the dependencies
+3. Create and activate a virtualenv and install the dependencies
 ```
-  $ python3.6 -m venv env
-  
-```
+  $ virtualenv -p python3 env
+  $ source ./env/bin/activate
+  $ pip3 install -r requirements
 
+```
 
 
 https://realpython.com/blog/python/token-based-authentication-with-flask/
 
 # Usage
+
+1. Run the server 
+```
+  $ python3 server.py
+```
+
+2. Call the api : 
+```
+   $ curl --data 'signal=4,5,6,8,3,5,-2,4,-1&value=5' http://127.0.0.1:5000/
+```
+
 
 ## Running the service
 
