@@ -4,28 +4,27 @@
 the number of value crossing
 """
 
-import sqlite3
-from flask import g
 from flask import request, url_for
 from flask.ext.api import FlaskAPI
+from flask_httpauth import HTTPBasicAuth
 
 app = FlaskAPI(__name__)
+auth = HTTPBasicAuth()
+
+users = {
+    'evan': 'python3',
+}
 
 
-DATABASE = '/path/to/database.db'
-
-
-def retrieveUsers():
-    """Retrieve users from the database"""
-    con = sql.connect("database.db")
-    cur = con.cursor()
-    cur.execute("SELECT username, password FROM users")
-    users = cur.fetchall()
-    con.close()
-    return users
+@auth.get_password
+def get_pw(username):
+    if users[username]:
+        return users.get(username)
+    return None
 
 
 @app.route("/", methods=['POST'])
+@auth.login_required
 def get_number():
     """Get the number of value crossing"""
     signal = request.data.get('signal', '')

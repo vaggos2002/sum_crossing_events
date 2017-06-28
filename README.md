@@ -2,18 +2,17 @@
 # sum_crossing_events
 Compute the sum of crossing events
 
-# Setup
+## Setup
 
 1. Clone the repository
 ```
   $ git clone https://github.com/vaggos2002/sum_crossing_events.git
-  cd sum_crossing_events
+  $ cd sum_crossing_events
 ```
 
 2. Use pip to install pip3 and virtualenv
 ```
-  $ sudo apt-get install python3-pip libsqlite3-dev
-  sqlite3
+  $ sudo apt-get install python3-pip libsqlite3-dev sqlite3
   $ sudo -H pip3 install virtualenv
 ```
 
@@ -28,7 +27,7 @@ Compute the sum of crossing events
 
 https://realpython.com/blog/python/token-based-authentication-with-flask/
 
-# Usage
+## Usage
 
 1. Run the server 
 ```
@@ -37,11 +36,11 @@ https://realpython.com/blog/python/token-based-authentication-with-flask/
 
 2. Call the api : 
 ```
-   $ curl --data 'signal=4,5,6,8,3,5,-2,4,-1&value=5' http://127.0.0.1:5000/
+   $ curl -u evan:python3 --data 'signal=4,5,6,8,3,5,-2,4,-1&value=5' http://127.0.0.1:5000/
 ```
 
 
-## Running the service
+### Running the service
 
 1. Installation
 2. User registration 
@@ -52,11 +51,16 @@ In order to identify a user, the web server uses a
 
 https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
 
-# Scale up
+## Scale up
 
+## Future development
 
+- Depending on the size of the project, improve its structure. Use django framework  to organize the models,  views
+  url and templates
+  
+  
 
-# Tests
+## Tests
 
 * Verify the sum function
 * Verify the reponce codes
