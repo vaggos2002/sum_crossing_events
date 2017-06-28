@@ -63,6 +63,9 @@ def get_number_of_value_crossings(signal, value):
         elif len(quant_list) == 0:
             quant_list.append(quat_i)
 
+    if len(quant_list) == 0:
+        return 0
+
     return len(quant_list) - 1
 
 

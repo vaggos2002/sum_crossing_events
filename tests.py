@@ -15,9 +15,6 @@ class TestNumberOfValueCrossings(unittest.TestCase):
     def setUp(self):
         self.func = get_number_of_value_crossings
 
-    def tearDown(self):
-        # Kill the process
-        pass
 
     def test_normal_signal(self):
         """Test normal signal"""
