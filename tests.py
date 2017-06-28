@@ -4,9 +4,9 @@
 """This is the test suite for testing the server script. To execute the tests:
     ./tests.py
 """
-import json
-from base64 import b64encode
 import unittest
+
+from base64 import b64encode
 from server import get_number_of_value_crossings, app
 
 
@@ -50,26 +50,67 @@ class TestFlaskApi(unittest.TestCase):
         self.app = app.test_client()
 
     def get_header(self, username, password):
-        all = "{0}:{1}".format(username, password)
-        enco_all = str(b64encode(all.encode('ascii')))
-        #username = b64encode(username.encode('ascii'))
-        #password = b64encode(password.encode('ascii'))
-        print(enco_all)
+        all_cred = "{0}:{1}".format(username, password)
+        encode_all = b64encode(all_cred.encode('ascii')).decode()
         return {
-            'content-type': 'application/json',
-            'Authorization': 'Basic ZXZhbjpweXRob24z'
-            #'Authorization': 'Basic {0}'.format(enco_all)
+            'Authorization': 'Basic {0}'.format(encode_all)
         }
 
-    def test_hello_world(self):
-        print(self.get_header('evan', 'python3'))
-        response = self.app.post('/',
-                                 data=dict(signal='4,5,6,8,3,5,-2,4,-1',value=5),
-                                 headers=self.get_header('evan', 'python3'),
-                                 follow_redirects=True)
-        self.assertEqual(response, {'hello': 'world'})
+    def test_http_200(self):
+        """Test 200 OK standard response for successful HTTP"""
+        rsps = self.app.post('/',
+                                 data={'signal':'4,5,6,8,3,5,-2,4,-1','value':'5'},
+                                 headers=self.get_header('evan', 'python3'))
+        self.assertEqual(rsps.status_code, 200)
+        self.assertEqual(rsps.data.decode(), '{"crossing_number": 2}')
 
+    def test_http_404(self):
+        """Test 404 Not Found"""
+        rsps = self.app.post('/not_existed/',
+                                 data={'signal':'4,5,6,8,3,5,-2,4,-1','value':'5'},
+                                 headers=self.get_header('evan', 'python3'))
+        self.assertEqual(rsps.status_code, 404)
+        self.assertNotEqual(rsps.data.decode(), '{"crossing_number": 2}')
 
+    def test_http_401(self):
+        """Test 401 Unauthorized"""
+        rsps = self.app.post('/',
+                                 data={'signal':'4,5,6,8,3,5,-2,4,-1','value':'5'},
+                                 headers=self.get_header('evan', 'INVALID'))
+        self.assertEqual(rsps.status_code, 401)
+        self.assertNotEqual(rsps.data.decode(), '{"crossing_number": 2}')
+
+    def test_http_422_no_signal(self):
+        """Test 422 Unprocessable Entity"""
+        rsps = self.app.post('/',
+                                 data={'value':'5'},
+                                 headers=self.get_header('evan', 'python3'))
+        self.assertEqual(rsps.status_code, 422)
+        self.assertNotEqual(rsps.data.decode(), '{"crossing_number": 2}')
+
+    def test_http_422_no_signal_content(self):
+        """Test 422 Unprocessable Entity"""
+        rsps = self.app.post('/',
+                                 data={'signal':'', 'value':'5'},
+                                 headers=self.get_header('evan', 'python3'))
+        self.assertEqual(rsps.status_code, 422)
+        self.assertNotEqual(rsps.data.decode(), '{"crossing_number": 2}')
+
+    def test_http_422_invalid_signal_content(self):
+        """Test 422 Unprocessable Entity"""
+        rsps = self.app.post('/',
+                                 data={'signal':'INVALID CONTENT', 'value':'5'},
+                                 headers=self.get_header('evan', 'python3'))
+        self.assertEqual(rsps.status_code, 422)
+        self.assertNotEqual(rsps.data.decode(), '{"crossing_number": 2}')
+
+    def test_http_422_invalid_value_content(self):
+        """Test 422 Unprocessable Entity"""
+        rsps = self.app.post('/',
+                                 data={'signal':'4,5,6,8,3,5,-2,4,-1', 'value':'INVALID CONTENT'},
+                                 headers=self.get_header('evan', 'python3'))
+        self.assertEqual(rsps.status_code, 422)
+        self.assertNotEqual(rsps.data.decode(), '{"crossing_number": 2}')
 
 if __name__ == '__main__':
     unittest.main()

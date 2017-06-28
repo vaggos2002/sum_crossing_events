@@ -4,8 +4,9 @@
 the number of value crossing
 """
 
-from flask import request, url_for
-from flask.ext.api import FlaskAPI
+from flask import request, url_for, abort
+
+from flask_api import FlaskAPI
 from flask_httpauth import HTTPBasicAuth
 
 app = FlaskAPI(__name__)
@@ -28,8 +29,17 @@ def get_pw(username):
 def get_number():
     """Get the number of value crossing"""
     signal = request.data.get('signal', '')
-    signal = [int(n) for n in signal.split(',')]
-    value = int(request.data.get('value', ''))
+    value = request.data.get('value', '')
+
+    if signal == '' or value == '':
+        abort(422)
+
+    try:
+        signal = [int(n) for n in signal.split(',')]
+        value = int(value)
+    except ValueError:
+        abort(422)
+
     crossing_number = get_number_of_value_crossings(signal, value)
     return {'crossing_number': crossing_number}
 
@@ -54,7 +64,6 @@ def get_number_of_value_crossings(signal, value):
             quant_list.append(quat_i)
 
     return len(quant_list) - 1
-
 
 
 if __name__ == '__main__':
